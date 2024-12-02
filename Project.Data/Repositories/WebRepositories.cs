@@ -1,4 +1,5 @@
-﻿using Project.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Project.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,17 @@ namespace Project.Data.Repositories
 {
     public class WebRepositories
     {
-        private readonly DataContext context = new DataContext();
+        
 
+        private readonly DataContext _context;
 
-        public List<Web> GetAll()
+        public WebRepositories(DataContext context)
+        {
+            _context = context;
+        }
+        public DbSet<Web> GetAll()
         {    //פונק'
-            return context.Web;
+            return _context.Webs;
         }
     }
 }

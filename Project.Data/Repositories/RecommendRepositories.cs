@@ -1,4 +1,5 @@
-﻿using Project.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Project.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,15 @@ namespace Project.Data.Repositories
 {
     public class RecommendRepositories
     {
-        private readonly DataContext context = new DataContext();
+        private readonly DataContext _context;
 
-
-        public List<Recommend> GetAll()
+        public RecommendRepositories(DataContext context)
+        {
+            _context = context;
+        }
+        public DbSet<Recommend> GetAll()
         {    //פונק'
-            return context.Users;
+            return _context.recommends;
         }
     }
 }

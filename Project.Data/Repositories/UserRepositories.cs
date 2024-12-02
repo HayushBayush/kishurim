@@ -1,4 +1,5 @@
-﻿using Project.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Project.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,16 @@ namespace Project.Data.Repositories
 {
     public class UserRepositories
     {
-        private readonly DataContext context = new DataContext();
 
+        private readonly DataContext _context;
 
-        public List<User> GetAll()
+        public UserRepositories(DataContext context)
+        {
+            _context = context;
+        }
+        public DbSet<User> GetAll()
         {    //פונק'
-            return context.User;
+            return _context.Users;
         }
     }
 }
