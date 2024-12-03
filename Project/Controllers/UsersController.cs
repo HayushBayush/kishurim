@@ -1,57 +1,79 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
-using Project;
+﻿using Microsoft.AspNetCore.Mvc;
 using Project.Entities;
+using Project.Core.Services;
 
-[Route("api/[controller]")]
-[ApiController]
-public class UsersController : ControllerBase
+namespace Project.Controllers
 {
-    private readonly DataContext _context;
-
-    public UsersController(DataContext context)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UsersController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly IUserService _userService;
 
-
-    [HttpGet]
-    public IEnumerable<User> Get()
-    {
-        return _context.User;
-    }
-
-    // GET api/<categoriesController>/5
-    [HttpGet("{id}")]
-    public ActionResult<User> GetByid(int id)
-    {
-        var User = _context.User.Find(x => x.id == id);
-        if (User != null)
+        public UsersController(IUserService userService)
         {
-            return Ok(User);
+            _userService = userService;
         }
-        return NotFound();
-    }
 
-    // POST 
-    [HttpPost]
-    public User Post([FromBody] User value)
-    {
-        _context.User.Add(new User { id = value.id, name = value.name,Email=value.Email,PhoneNamber=value.PhoneNamber });
-        return value;
-    }
-
-    [HttpPut("{id}")]
-    public IActionResult Put(int id, [FromBody] User value)
-    {
-        var index = _context.User.FindIndex(e => e.id == id);
-        if (index >= 0)
+        // GET: api/Users
+        [HttpGet]
+        public ActionResult Get()
         {
-            _context.User[index].Email = value.Email;
-            _context.User[index].name = value.name;
-            _context.User[index].PhoneNamber = value.PhoneNamber;
-            return Ok(_context.User[index]);
+            return Ok(_userService.GetList());
         }
-        return NotFound();
+
+        // GET api/Users/5
+        [HttpGet("{id}")]
+        public ActionResult GetById(int id)
+        {
+            var user = _userService.GetById(id);
+            if (user != null)
+            {
+                return Ok(user);
+            }
+            return NotFound();
+        }
+
+        // POST api/Users
+        [HttpPost]
+        public ActionResult Post([FromBody] User user)
+        {
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            var createdUser = _userService.Add(user);
+            return CreatedAtAction(nameof(GetById), new { id = createdUser.id }, createdUser);
+        }
+
+        // PUT api/Users/5
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] User value)
+        {
+            if (value == null)
+            {
+                return BadRequest();
+            }
+
+            var updatedUser = _userService.Update(id, value);
+            if (updatedUser != null)
+            {
+                return Ok(updatedUser);
+            }
+            return NotFound();
+        }
+
+        // DELETE api/Users/5
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var success = _userService.Delete(id);
+            if (success)
+            {
+                return NoContent();
+            }
+            return NotFound();
+        }
     }
 }

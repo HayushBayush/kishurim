@@ -1,57 +1,78 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Project.Entities;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Project.Core.Services;
+using Project.Core.services;
 
 namespace Project.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class WebsController : ControllerBase
+    public class WebController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly IWebService _webService;
 
-        public WebsController(DataContext context)
+        public WebController(IWebService webService)
         {
-            _context = context;
+            _webService = webService;
         }
 
-
+        // GET: api/Web
         [HttpGet]
-        public IEnumerable<Web> Get()
+        public ActionResult Get()
         {
-            return _context.Web;
+            return Ok(_webService.GetList());
         }
 
-        // GET api/<WebController>/5
+        // GET api/Web/5
         [HttpGet("{id}")]
-        public ActionResult<Web> GetByid(int id)
+        public ActionResult GetById(int id)
         {
-            var Web = _context.Web.Find(x => x.id == id);
-            if (Web != null)
+            var web = _webService.GetById(id);
+            if (web != null)
             {
-                return Ok(Web);
+                return Ok(web);
             }
             return NotFound();
         }
 
-        // POST 
+        // POST api/Web
         [HttpPost]
-        public Web Post([FromBody] Web value)
+        public ActionResult Post([FromBody] Web web)
         {
-            _context.Web.Add(new Web { id = value.id, name = value.name, link = value.link });
-            return value;
+            if (web == null)
+            {
+                return BadRequest();
+            }
+
+            var createdWeb = _webService.Add(web);
+            return CreatedAtAction(nameof(GetById), new { id = createdWeb.id }, createdWeb);
         }
 
+        // PUT api/Web/5
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] Web value)
         {
-            var index = _context.Web.FindIndex(e => e.id == id);
-            if (index >= 0)
+            if (value == null)
             {
-                _context.Web[index].name = value.name;
-                _context.Web[index].link = value.link;
-                return Ok(_context.Web[index]);
+                return BadRequest();
+            }
+
+            var updatedWeb = _webService.Update(id, value);
+            if (updatedWeb != null)
+            {
+                return Ok(updatedWeb);
+            }
+            return NotFound();
+        }
+
+        // DELETE api/Web/5
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var success = _webService.Delete(id);
+            if (success)
+            {
+                return NoContent();
             }
             return NotFound();
         }

@@ -1,77 +1,67 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Project.Core.services;
 using Project.Entities;
 using System.Collections.Generic;
-using System.Xml.Linq;
 
 namespace Project.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class RecommendsController : ControllerBase
+    [Route("api/[controller]")]
+    public class RecommendController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly IRecommendService _recommendService;
 
-        public RecommendsController(DataContext context)
+        public RecommendController(IRecommendService recommendService)
         {
-            _context = context;
+            _recommendService = recommendService;
         }
 
-        //// אתחול של הרשימה עם ערכים ריקים
-        //private static List<string> _Recommend = new List<string>();
-
-        // GET: api/<RecommendController>
+        // GET: api/recommend
         [HttpGet]
-        public IEnumerable<Recommend> Get()
+        public ActionResult<IEnumerable<Recommend>> Get()
         {
-            // כאן אפשר להחזיר את כל ההמלצות שנמצאות ברשימה
-            return _context.Recommend;
+            return Ok(_recommendService.GetList());
         }
 
-        //GET api/<RecommendController>/5
-        //[HttpGet("{id}")]
-        public ActionResult <Recommend> Getid(int id)
+        // GET api/recommend/5
+        [HttpGet("{id}")]
+        public ActionResult<Recommend> GetById(int id)
         {
-            // כאן אפשר להחזיר המלצה לפי מזהה
-            if (id >= 0 && id < _context.Recommend.Count())
+            var recommend = _recommendService.GetById(id);
+            if (recommend == null)
             {
-                return _context.Recommend[id];
+                return NotFound();
             }
-            if (User != null)
-            {
-                return Ok(User);
-            }
-            return NotFound();
-        }// במקרה שהמזהה לא קיים ברשימה
-        
+            return Ok(recommend);
+        }
 
-        // POST api/<RecommendController>
+        // POST api/recommend
         [HttpPost]
-        public Recommend Post([FromBody] Recommend value)
+        public ActionResult Post([FromBody] Recommend recommend)
         {
-            _context.Recommend.Add(new Recommend { Id = value.Id, Description = value.Description, Name = value.Name });
-            return value;
+            _recommendService.AddRecommend(recommend);
+            return CreatedAtAction(nameof(GetById), new { id = recommend.Id }, recommend);
         }
 
-        //// PUT api/<RecommendController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //    // עדכון המלצה לפי מזהה
-        //    if (id >= 0 && id < _Recommend.Count)
-        //    {
-        //        _Recommend[id] = value;
-        //    }
-        //}
-
-        // DELETE api/<RecommendController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        // PUT api/recommend/5
+        [HttpPut("{id}")]
+        public ActionResult Put(int id, [FromBody] Recommend recommend)
         {
-            // מחיקת המלצה לפי מזהה
-            if (id >= 0 && id < _context.Recommend.Count()) 
+            if (id != recommend.Id)
             {
-                _context.Recommend.RemoveAt(id);
+                return BadRequest();
             }
+
+            _recommendService.UpdateRecommend(recommend);
+            return NoContent();
+        }
+
+        // DELETE api/recommend/5 (אופציונלי)
+        [HttpDelete("{id}")]
+        public ActionResult Delete(int id)
+        {
+            _recommendService.DeleteRecommend(id);
+            return NoContent();
         }
     }
 }

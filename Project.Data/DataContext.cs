@@ -8,15 +8,14 @@ namespace Project.Data
     public class DataContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<Category> Category { get; set; }
+      
         public DbSet<Web> Webs { get; set; }
-        public DbSet<Recommend> recommend { get; set; }
-        public List<Category> Categories { get; internal set; }
-        public DbSet<Recommend> recommends { get; internal set; }
+        public DbSet<Category> Categories { get;  set; }
+        public DbSet<Recommend> recommends { get;  set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=sample_db");
+            optionsBuilder.UseSqlServer(@"Server=.\\SQLEXPRESS;Database=sample_db");
         }
 
     }
