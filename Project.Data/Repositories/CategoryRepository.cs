@@ -7,16 +7,6 @@ namespace Project.Core.Repositories
     public class CategoryRepository : ICategoryRepository
     {
         private readonly List<Category> _categories;
-
-        public CategoryRepository()
-        {
-            _categories = new List<Category>
-            {
-                new Category { Id = 1, name = "Technology" },
-                new Category { Id = 2, name = "Science" }
-            };
-        }
-
         public List<Category> GetAll()
         {
             return _categories;

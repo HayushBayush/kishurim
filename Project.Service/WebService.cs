@@ -10,14 +10,14 @@ namespace Project.Core.Services
     {
         private readonly List<Web> _webs;
 
-        public WebService()
-        {
-            _webs = new List<Web>
-            {
-                new Web { id = 1, name = "Google", link = "https://www.google.com" },
-                new Web { id = 2, name = "Facebook", link = "https://www.facebook.com" }
-            };
-        }
+        //public WebService()
+        //{
+        //    _webs = new List<Web>
+        //    {
+        //        new Web { id = 1, name = "Google", link = "https://www.google.com" },
+        //        new Web { id = 2, name = "Facebook", link = "https://www.facebook.com" }
+        //    };
+        //}
 
         public List<Web> GetList()
         {

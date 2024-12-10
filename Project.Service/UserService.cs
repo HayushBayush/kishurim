@@ -9,14 +9,14 @@ namespace Project.Core.Services
     {
         private readonly List<User> _users;
 
-        public UserService()
-        {
-            _users = new List<User>
-            {
-                new User { id = 1, name = "John Doe", Email = "john@example.com", PhoneNamber = 1234567890 },
+        //public UserService()
+        //{
+        //    _users = new List<User>
+        //    {
+        //        new User { id = 1, name = "John Doe", Email = "john@example.com", PhoneNamber = 1234567890 },
                 
-            };
-        }
+        //    };
+        //}
 
         public List<User> GetList()
         {

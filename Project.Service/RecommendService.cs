@@ -9,15 +9,15 @@ namespace Project.Core.services
     {
         private readonly List<Recommend> _recommends;
 
-        public RecommendService()
-        {
-            _recommends = new List<Recommend>
-            {
-                new Recommend { Id = 1, Name = "Recommendation 1", Description = "Description for recommendation 1" },
-                new Recommend { Id = 2, Name = "Recommendation 2", Description = "Description for recommendation 2" },
-                // ניתן להוסיף המלצות נוספות לדוגמה
-            };
-        }
+        //public RecommendService()
+        //{
+        //    _recommends = new List<Recommend>
+        //    {
+        //        new Recommend { Id = 1, Name = "Recommendation 1", Description = "Description for recommendation 1" },
+        //        new Recommend { Id = 2, Name = "Recommendation 2", Description = "Description for recommendation 2" },
+        //        // ניתן להוסיף המלצות נוספות לדוגמה
+        //    };
+        //}
 
         public List<Recommend> GetList()
         {
