@@ -11,8 +11,11 @@ namespace Project.Core.services
     {
         public List<User> GetList();
         public User GetById(int id);
-        object GetByid(int id);
         public Category Add(Category category);
-        object Update(int id, Category value);
+        public Category Update(int id, Category value);
+        public void Deletecategory(int id);
+        
+        //public void Delete(int id);
+        //public void GetByid(int id);
     }
 }

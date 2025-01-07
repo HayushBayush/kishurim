@@ -1,6 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
-using Project;
+﻿using Microsoft.AspNetCore.Mvc;
 using Project.Core.services;
 using Project.Entities;
 
@@ -8,59 +6,68 @@ using Project.Entities;
 [ApiController]
 public class CategoriesController : ControllerBase
 {
-    private readonly ICategoryService _CategoryService;
+    private readonly ICategoryService _categoryService;
+
     public CategoriesController(ICategoryService categoryService)
     {
-        _CategoryService = categoryService;
-
+        _categoryService = categoryService; // תלות בשירות הקטגוריות
     }
+
     [HttpGet]
     public ActionResult Get()
     {
-        return Ok(_CategoryService.GetList());
+        return Ok(_categoryService.GetList()); // מחזיר את כל הקטגוריות
     }
 
-    // GET api/<categoriesController>/5
     [HttpGet("{id}")]
-    public ActionResult GetByid(int id)
+    public ActionResult GetById(int id)
     {
-        var category = _CategoryService.GetByid(id);
+        var category = _categoryService.GetById(id);
         if (category != null)
         {
-            return Ok(category);
+            return Ok(category); // מחזיר קטגוריה לפי מזהה אם קיימת
         }
-        return NotFound();
+        return NotFound(); // מחזיר שלא נמצא
     }
 
-    
-    // POST api/<categoriesController>
     [HttpPost]
     public ActionResult Post([FromBody] Category category)
     {
-        if (category == null)
+        if (category == null || string.IsNullOrWhiteSpace(category.Name))
         {
-            return BadRequest();
+            return BadRequest(); // בדיקה שהקטגוריה תקינה
         }
 
-        var createdCategory = _CategoryService.Add(category);
-        return CreatedAtAction(nameof(GetByid), new { id = createdCategory.Id }, createdCategory);
+        var createdCategory = _categoryService.Add(category);
+        return CreatedAtAction(nameof(GetById), new { id = createdCategory.Id }, createdCategory);
     }
-
 
     [HttpPut("{id}")]
     public IActionResult Put(int id, [FromBody] Category value)
     {
-        if (value == null)
+        if (value == null || value.Id != id)
         {
-            return BadRequest();
+            return BadRequest(); // בדיקה שהנתונים תואמים
         }
 
-        var updatedCategory = _CategoryService.Update(id, value);
+        var updatedCategory = _categoryService.Update(id, value);
         if (updatedCategory != null)
         {
             return Ok(updatedCategory);
         }
-        return NotFound();
+        return NotFound(); // אם הקטגוריה לא קיימת
+    }
+
+    [HttpDelete("{id}")]
+    public ActionResult Delete(int id)
+    {
+        var exists = _categoryService.GetById(id) != null;
+        if (!exists)
+        {
+            return NotFound(); // אם הקטגוריה לא קיימת
+        }
+
+        _categoryService.Deletecategory(id);
+        return NoContent(); // מחזיר הצלחה ללא תוכן
     }
 }
-

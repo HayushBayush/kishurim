@@ -56,7 +56,7 @@ namespace Project.Controllers
             return NoContent();
         }
 
-        // DELETE api/recommend/5 (אופציונלי)
+        // DELETE api/recommend/5 
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
